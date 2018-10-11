@@ -335,4 +335,4 @@ class OptimizedVM(VoxelModel):
                            cnt += 1
                         m += m
                      if self.opt_level == 1: cs[idx] = 0
-         if self.opt_level == 2: print(cnt)
+         #if self.opt_level == 2: print(cnt)

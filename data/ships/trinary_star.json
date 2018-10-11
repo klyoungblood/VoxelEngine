@@ -1,0 +1,22 @@
+{
+    "MainModel": "data/vox/stars/blank.vox",
+    "ChildModels": 
+    [
+        {
+            "Model": "data/vox/stars/star.vox",
+            "Offset": [6, 0, 0],
+            "Rotation": [15, 0, 0, 360]
+        },
+        {   
+            "Model": "data/vox/stars/star.vox",
+            "Offset": [0, 5, 0],
+            "Rotation": [25, 0, 0, -360]
+        },
+        {   
+            "Model": "data/vox/stars/star.vox",
+            "Offset": [-3, -2, 0],
+            "Rotation": [25, 0, 0, 360]
+        }
+    ],
+    "EngineFires": []
+}
