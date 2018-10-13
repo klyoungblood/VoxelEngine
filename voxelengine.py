@@ -7,6 +7,7 @@ from odvm.optimizedvm import OptimizedVM
 import os, json
 from direct.showbase.ShowBase import ShowBase
 
+
 hi_white = (1,1,1,1)
 hi_yellow = (1,1,0,1)
 hi_red = (1,0,0,1)
@@ -60,7 +61,7 @@ class VoxelEngine(ShowBase):
       
       self.font = loader.loadFont('data/fonts/iceland.ttf')
       self.font.setPixelsPerUnit(100)
-      
+   
       tempnode = NodePath(PandaNode("temp node"))
       tempnode.setShader(loader.loadShader("data/shaders/lightinggen.sha"))
       self.cam.node().setInitialState(tempnode.getState())
@@ -92,12 +93,6 @@ class VoxelEngine(ShowBase):
       drawnScene.setShaderInput("separation", LVecBase4(self.separation, 0, self.separation, 0))
       drawnScene.setShaderInput("cutoff", LVecBase4(self.cutoff))
       
-      base.accept( 'w', self.toggle_wireframes )
-      
-      base.bufferViewer.position = 'llcorner'
-      base.bufferViewer.setCardSize(0,0.25)
-      base.bufferViewer.layout   = 'vline'
-      
       self.labelsbuffer = self.win.makeTextureBuffer("LabelsBuffer", 0, 0)
       self.labelsbuffer.setSort(-2)
       self.labelsbuffer.setClearColor(LVector4(0, 0, 0, 0))
@@ -105,30 +100,47 @@ class VoxelEngine(ShowBase):
       self.labelsnode = NodePath("new render")
       self.labelscamera.reparentTo(self.labelsnode)
       
-      #self.starbuffer = self.win.makeTextureBuffer("StarBuffer", 0, 0)
-      #self.starbuffer.setSort(5)
-      #self.starbuffer.setClearColor(LVector4(0, 0, 0, 1))
-      #self.starcamera = self.makeCamera(self.starbuffer, lens=base.cam.node().getLens(),sort=-10)
-      #self.starnode = NodePath("new render")
-      #self.starcamera.reparentTo(self.starnode)
+      self.starbuffer = self.win.makeTextureBuffer("StarBuffer", 0, 0)
+      self.starbuffer.setSort(5)
+      self.starbuffer.setClearColor(LVector4(0, 0, 0, 1))
+      self.starcamera = self.makeCamera(self.starbuffer, lens=base.cam.node().getLens(),sort=-10)
+      self.starnode = NodePath("new render")
+      self.starcamera.reparentTo(self.starnode)
       
       self.sky = loader.loadModel("skysphere.bam")
       self.sky.setBin('background',1)
       self.sky.setShaderOff()
       self.sky.setLightOff()
-      #self.sky.reparentTo(self.starnode)
-      self.sky.reparentTo(render)
+      self.sky.reparentTo(self.starnode)
+      #self.sky.reparentTo(render)
       self.sky.setScale(1000)   
-       
-      #sScene = self.starbuffer.getTextureCard()
-      #sScene.setTransparency(0)
-      #sScene.reparentTo(render2d)
-                  
-      lScene = self.labelsbuffer.getTextureCard()
-      lScene.setTransparency(1)
-      lScene.reparentTo(render2d)
-
       
+      #the wrong way to do it      
+      #sScene = self.starbuffer.getTextureCard()
+      #sScene.setTransparency(1)
+      #sScene.reparentTo(render2d)
+
+      #mScene = self.mainbuffer.getTextureCard()
+      #mScene.setTransparency(1)
+      #mScene.reparentTo(render2d)
+            
+      #lScene = self.labelsbuffer.getTextureCard()
+      #lScene.setTransparency(1)
+      #lScene.reparentTo(render2d)
+      
+      drstars = base.win.makeDisplayRegion(0, 1, 0, 1)
+      drstars.setCamera(self.starcamera)
+      drstars.setSort(-1)
+      
+      drlabels = base.win.makeDisplayRegion(0, 1, 0, 1)
+      drlabels.setCamera(self.labelscamera)
+      drlabels.setSort(10)
+            
+      base.accept( 'w', self.toggle_wireframes )
+      
+      base.bufferViewer.position = 'llcorner'
+      base.bufferViewer.setCardSize(0,0.25)
+      base.bufferViewer.layout   = 'vline'      
       base.accept( 'v', self.toggle_cards )
             
    def SetModelPos(self,modelidx,x,y,z):
@@ -234,7 +246,7 @@ class VoxelEngine(ShowBase):
              fireidx = self.LoadVoxModel(engine['Model'], True)
              self.SetModelPos(fireidx, engine['Offset'][0], engine['Offset'][1], engine['Offset'][2])
              self.SetModelParent(fireidx, modelidx)
-             engines.append(childidx)
+             engines.append(fireidx)
           ship = {'modelidx':modelidx, 'highlights':[], 'childmodels': childmodels, 'engines': engines, 'label': -1}
           
           self.ships.append(ship)
